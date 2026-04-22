@@ -1,0 +1,79 @@
+import { useState } from 'react';
+
+const AddStudentForm = ({ onAddStudent }) => {
+  const [name, setName]   = useState('');
+  const [score, setScore] = useState('');
+  const [error, setError] = useState('');
+
+  const handleSubmit = () => {
+    const trimmed = name.trim();
+    const numScore = Number(score);
+
+    if (!trimmed) {
+      setError('Please enter a student name.');
+      return;
+    }
+    if (score === '' || isNaN(numScore) || numScore < 0 || numScore > 100) {
+      setError('Score must be a number between 0 and 100.');
+      return;
+    }
+
+    onAddStudent({ name: trimmed, score: numScore });
+    setName('');
+    setScore('');
+    setError('');
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') handleSubmit();
+  };
+
+  return (
+    <section className="form-section">
+      <div className="form-header">
+        <div className="form-icon">➕</div>
+        <h2>Add New Student</h2>
+      </div>
+
+      <div className="form-body">
+        <div className="form-grid">
+          <div className="form-group">
+            <label htmlFor="student-name">Full Name</label>
+            <input
+              id="student-name"
+              type="text"
+              className="form-input"
+              placeholder="e.g. Priya Sharma"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              onKeyDown={handleKeyDown}
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="student-score">Score (0–100)</label>
+            <input
+              id="student-score"
+              type="number"
+              className="form-input"
+              placeholder="e.g. 78"
+              min="0"
+              max="100"
+              value={score}
+              onChange={(e) => setScore(e.target.value)}
+              onKeyDown={handleKeyDown}
+            />
+          </div>
+
+          <button className="btn-add" onClick={handleSubmit}>
+            Add Student
+          </button>
+        </div>
+
+        {error && <p className="form-error">⚠ {error}</p>}
+      </div>
+    </section>
+  );
+};
+
+export default AddStudentForm;
